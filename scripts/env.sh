@@ -206,7 +206,6 @@ function FNC_help() {
   help_outputs "" "This is an OPTIONAL argument. If no ${cyan}venv-env${normal} is provided,"
   help_outputs "" "it will create and/or activate the default venv (.env)"
   printf "\n"
-
 }
 
 output_received_args "$0" "$@"

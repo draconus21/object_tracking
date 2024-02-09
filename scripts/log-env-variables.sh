@@ -34,9 +34,7 @@ yellow "[PATH] ${cyan}# = ${normal}$numbersOfPathsFound"
 sed 's/:/\n/g' <<<$PATH | grep -E "$OpenCV_DIR"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-  if [[ -z $LD_LIBRARY_PATH ]]; then
-    # do  nothing
-  else
+  if [[ -n $LD_LIBRARY_PATH ]]; then
     numbersOfLDLibraryPathsFound=$(sed 's/:/\n/g' <<<"$LD_LIBRARY_PATH" | grep -c -E "$OpenCV_DIR")
     yellow "[LD_LIBRARY_PATH] ${cyan}# = ${normal}$numbersOfLDLibraryPathsFound"
     sed 's/:/\n/g' <<<$LD_LIBRARY_PATH | grep -E "$OpenCV_DIR"
