@@ -128,25 +128,6 @@ fi
 
 chmod u+x -R "${OTRK_DIR}/scripts"
 
-OTRK_DATA_DIR="$OTRK_DIR/data"
-OTRK_EXPERIMENTS_DIR="$OTRK_DIR/experiments"
-OTRK_LOG_DIR="$OTRK_DIR/logs"
-OTRK_LOG_CFG="$OTRK_DIR/default-logging.json"
-
-make_dir $OTRK_DATA_DIR
-make_dir $OTRK_EXPERIMENTS_DIR
-make_dir $OTRK_LOG_DIR
-
-cyan "\n[Generated Base Env.Vars]"
-arrayEnvVarsToExport=(  OTRK_DIR
-                        OTRK_DATA_DIR
-                        OTRK_EXPERIMENTS_DIR
-                        OTRK_LOG_DIR
-                        OTRK_LOG_CFG)
-
-export_env_var_arrays "${arrayEnvVarsToExport[@]}"
-display_env_var_arrays "${arrayEnvVarsToExport[@]}"
-
 # ------------------------------------------------------------------- #
 #                                 PYTHON                              #
 # ------------------------------------------------------------------- #
@@ -195,7 +176,7 @@ source ${OTRK_PYTHON_VENV_PATH}
 
 # get python executable from venv
 OTRK_PYTHON_EXECUTABLE=$(which python)
-OTRK_PYTHON_VERSION=$($OTRK_PYTHON_EXECUTABLE -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+OTRK_PYTHON_VERSION=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 
 arrayEnvVarsToExport=(  OTRK_PYTHON_VENV
                         OTRK_PYTHON_VENV_PATH
