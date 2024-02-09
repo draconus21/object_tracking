@@ -1,9 +1,11 @@
 #! /bin/bash
 
+ABOUT_SCRIPT="
+Object Tracking: A learning based object tracker.
 
-# -o prevent errors from being masked
-# -u require vars to be declared before referencing them
-set -ou pipefail
+Setup dev environment for Object Tracking.
+Make sure to run this script in each terminal you want to develop with Object Tracking."
+
 
 normal=$(tput sgr0)
 bg_normal=$(tput setab sgr0)
@@ -13,19 +15,19 @@ green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 cyan=$(tput setaf 6)
 
-function green () {
-    echo -e ${green}$1${normal}
+function green() {
+  echo -e ${green}$1${normal}
 }
 
-function red () {
-    echo -e ${red}$1${normal}
+function red() {
+  echo -e ${red}$1${normal}
 }
 
-function yellow () {
-    echo -e ${yellow}$1${normal}
+function yellow() {
+  echo -e ${yellow}$1${normal}
 }
 
-function cyan () {
+function cyan() {
   echo -e ${cyan}$1${normal}
 }
 
@@ -40,34 +42,19 @@ function cyan () {
 # Adds visual padding for visibility
 # usage - output_spacing "command" "info"
 tmp_padding="                                    " # expand as necessary...
-function output_spacing () {
-	tmp_stringToPad=$1
-	printf "%s%s %s %s\n" "${yellow}$1" "${tmp_padding:${#tmp_stringToPad}}" ":" "${normal}$2"
+function output_spacing() {
+  tmp_stringToPad=$1
+  printf "%s%s %s %s\n" "${yellow}$1" "${tmp_padding:${#tmp_stringToPad}}" ":" "${normal}$2"
 }
 
 # outputs received script arguments
 # SYNTAX - output_received_args "$@"
 function output_received_args () {
-
   echo -n "$bg_black""$yellow"  # set bg/text colors
-  printf "[cmd] : %s" "${SHELL##*/}"
   args=("$@")           # store arguments in a special array
   ELEMENTS=${#args[@]}  # get number of elements
 
-  case $SHELL in
-    */zsh)
-    START=1
-    END=$ELEMENTS+1
-    ;;
-    *)
-    START=0
-    END=$ELEMENTS
-    ;;
-  esac
-
-  for (( v=$START;v<$END;v++)); do
-    printf ' %s' "${args[${v}]}"
-  done
+  printf "[cmd] : ${args}"
 
   echo -n "$bg_normal""$normal" # reset bg/text colors
   printf "\n\n"
@@ -103,94 +90,146 @@ function display_env_var_arrays() {
 }
 
 make_dir() {
-    if [[ ! -d $1 ]]; then
+  if [[ ! -d $1 ]]; then
     echo "creating dir: $1"
-        mkdir -p $1
-    fi
+    mkdir -p $1
+  fi
 }
 
-green "═══ start object_tracking env.sh ═══"
-output_received_args "$@"
+function setup_env() {
+  green "═══ object_tracking env.sh ═══"
 
-# ------------------------------------------------------------------- #
-#                                  ARGS                               #
-# ------------------------------------------------------------------- #
-OTRK_DIR="$(pwd)"
+  # -o prevent errors from being masked
+  # -u require vars to be declared before referencing them
+  set -uo pipefail
 
-# ------------------------------------------------------------------- #
-#                             BASE Env.Vars                           #
-# ------------------------------------------------------------------- #
-
-if [[ ! -d "$OTRK_DIR" ]]; then
-        red "Error: OTRK_DIR:$OTRK_DIR doesn't point to a valid directory";
-        return 1;
-fi
-
-chmod u+x -R "${OTRK_DIR}/scripts"
-
-# ------------------------------------------------------------------- #
-#                                 PYTHON                              #
-# ------------------------------------------------------------------- #
-green "\n--- Python Env.Vars ---"
+  USER_VENV=${1:-""}
+  DEFAULT_VENV=".env"
 
 
-if [[ "$OSTYPE" == "msys" ]]; then
-  NKK_PYTHON_EXECUTABLE=$(which python)
-else
-  OTRK_PYTHON_EXECUTABLE=$(which python3)
-fi
 
-DEFAULT_VENV=".env"
+  # ------------------------------------------------------------------- #
+  #                                  ARGS                               #
+  # ------------------------------------------------------------------- #
+  OTRK_DIR="$(pwd)"
 
-# use default venv if first arg is empty
-arg1=${1:-""}
-VAR=$1
-OTRK_PYTHON_VENV="${VAR:=${OTRK_DIR}/${DEFAULT_VENV}}"
+  # ------------------------------------------------------------------- #
+  #                             BASE Env.Vars                           #
+  # ------------------------------------------------------------------- #
 
-if [[ "$OSTYPE" == "msys" ]]; then
-  OTRK_PYTHON_VENV_PATH="${OTRK_PYTHON_VENV}"/Scripts/activate
-else
-  OTRK_PYTHON_VENV_PATH="${OTRK_PYTHON_VENV}"/bin/activate
-fi
+  if [[ ! -d "$OTRK_DIR" ]]; then
+    red "Error: OTRK_DIR:$OTRK_DIR doesn't point to a valid directory"
+    return 1
+  fi
 
-# check if venv dir exists, if not create one after confirming with user
-if [[ ! -d ${OTRK_PYTHON_VENV} ]]; then
+  arrayEnvVarsToExport=(OTRK_DIR)
+
+  export_env_var_arrays "${arrayEnvVarsToExport[@]}"
+  display_env_var_arrays "${arrayEnvVarsToExport[@]}"
+  chmod u+x -R "${OTRK_DIR}/scripts"
+
+  # ------------------------------------------------------------------- #
+  #                                 PYTHON                              #
+  # ------------------------------------------------------------------- #
+  green "\n--- Python Env.Vars ---"
+
+  if [[ "$OSTYPE" == "msys" ]]; then
+    OTRK_PYTHON_EXECUTABLE=$(which python)
+  else
+    OTRK_PYTHON_EXECUTABLE=$(which python3)
+  fi
+
+  OTRK_PYTHON_VENV="${USER_VENV:=${OTRK_DIR}/${DEFAULT_VENV}}"
+
+  if [[ "$OSTYPE" == "msys" ]]; then
+    OTRK_PYTHON_VENV_PATH="${OTRK_PYTHON_VENV}"/Scripts/activate
+  else
+    OTRK_PYTHON_VENV_PATH="${OTRK_PYTHON_VENV}"/bin/activate
+  fi
+
+  # check if venv dir exists, if not create one after confirming with user
+  if [[ ! -d ${OTRK_PYTHON_VENV} ]]; then
     red "virtual env does not exist at ${OTRK_PYTHON_VENV}"
     case $SHELL in
     */zsh)
-        vared -p "Would you like me to create one? [y/n]: " -c confirm
-    ;;
+      vared -p "Would you like me to create one? [y/n]: " -c confirm
+      ;;
     */bash) # vared incompatible on bash
-        echo "Would you like me to create one? [y/n]: "; read confirm
-    ;;
+      echo "Would you like me to create one? [y/n]: "
+      read confirm
+      ;;
     *)
-    echo "no compatible shells"
+      echo "no compatible shells"
+      ;;
     esac
-  if [[ "$confirm" == "y" ]]; then
-    yellow "creating venv ${OTRK_PYTHON_VENV}"
-    "${OTRK_PYTHON_EXECUTABLE}" -m venv "${OTRK_PYTHON_VENV}"
+    if [[ "$confirm" == "y" ]]; then
+      yellow "creating venv ${OTRK_PYTHON_VENV}"
+      "${OTRK_PYTHON_EXECUTABLE}" -m venv "${OTRK_PYTHON_VENV}"
+    fi
   fi
-fi
 
-source ${OTRK_PYTHON_VENV_PATH}
+  source ${OTRK_PYTHON_VENV_PATH}
 
-# get python executable from venv
-OTRK_PYTHON_EXECUTABLE=$(which python)
-OTRK_PYTHON_VERSION=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+  # get python executable from venv
+  OTRK_PYTHON_EXECUTABLE=$(which python)
+  OTRK_PYTHON_VERSION=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 
-arrayEnvVarsToExport=(  OTRK_PYTHON_VENV
-                        OTRK_PYTHON_VENV_PATH
-                        OTRK_PYTHON_EXECUTABLE
-                        OTRK_PYTHON_VERSION)
+  arrayEnvVarsToExport=(OTRK_PYTHON_VENV
+    OTRK_PYTHON_VENV_PATH
+    OTRK_PYTHON_EXECUTABLE
+    OTRK_PYTHON_VERSION)
 
-export_env_var_arrays "${arrayEnvVarsToExport[@]}"
-display_env_var_arrays "${arrayEnvVarsToExport[@]}"
+  export_env_var_arrays "${arrayEnvVarsToExport[@]}"
+  display_env_var_arrays "${arrayEnvVarsToExport[@]}"
 
-green "\n--- Final Env.Vars ---"
-cyan "(All env. vars. generated from this script related to OTRK)"
-$OTRK_DIR/scripts/log-env-variables.sh
+  green "\n--- Final Env.Vars ---"
+  cyan "(All env. vars. generated from this script related to OTRK)"
+  $OTRK_DIR/scripts/log-env-variables.sh
 
-green "═══ end object_tracking env.sh ═══"
+  # To avoid propagating the unbound and pipefail to the current terminal.
+  set +uo pipefail
 
-# To avoid propagating the unbound and pipefail to the current terminal.
-set +uo pipefail
+  green "═══ object_tracking env.sh ═══"
+}
+
+function FNC_help() {
+  # usage - help_outputs "command" "info"
+  tmp_padding="          "
+  function help_outputs() {
+    tmp_stringToPad=$1
+    printf "%s%s %s %s\n" "${yellow}$1" "${tmp_padding:${#tmp_stringToPad}}" ":" "${normal}$2"
+  }
+
+  green "\n________________________ PURPOSE ________________________"
+  echo "$ABOUT_SCRIPT"
+
+  green "\n________________________ USAGE INFO ________________________"
+
+  instruction=("SYNTAX" "${normal}source scripts/env.sh ${yellow}[venv-name]")
+  printf "%s%s %s\n" "${green}${instruction[0]}" "${tmp_padding:${#instruction[0]}}" "${instruction[1]}"
+
+  help_outputs "-h" "Print this message"
+  help_outputs "venv-name" "Activates the python virtual environment ${cyan}venv-env${normal}"
+  help_outputs "" "Additionally, if ${cyan}venv-env${normal} does not exist, it will prompt the user and create one."
+  help_outputs "" "This is an OPTIONAL argument. If no ${cyan}venv-env${normal} is provided,"
+  help_outputs "" "it will create and/or activate the default venv (.env)"
+  printf "\n"
+
+}
+
+output_received_args "$0" "$@"
+
+# shifting over all --${OPTARG}s
+# shift $((OPTIND - 1))
+DEFAULT_SCRIPT_ARGUMENT=""
+SCRIPT_ARGUMENT=${1:-${DEFAULT_SCRIPT_ARGUMENT}}
+
+case "${SCRIPT_ARGUMENT}" in
+-h | -help | --help | --h)
+  FNC_help
+  ;;
+*)
+  setup_env $SCRIPT_ARGUMENT
+  ;;
+esac
+
