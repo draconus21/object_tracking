@@ -75,14 +75,14 @@ function display_env_var_arrays() {
 
 	for i in "${arr[@]}"; do
 		case $SHELL in
-		*/zsh) # shell-check doesn't support zsh and will mark as error
-		output_spacing "${i}" "${(P)i}"
-		;;
-		*/bash) # ${!i} is incompatible on zsh (indirect expansion)
-		output_spacing "${i}" "${!i}"
-		;;
-		*)
-		echo "no compatible shells"
+      */zsh) # shell-check doesn't support zsh and will mark as error
+      output_spacing "${i}" "${(P)i}"
+      ;;
+      */bash) # ${!i} is incompatible on zsh (indirect expansion)
+      output_spacing "${i}" "${!i}"
+      ;;
+      *)
+      echo "no compatible shells"
 		esac
 
 	done
