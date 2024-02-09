@@ -68,34 +68,6 @@ def secho(message, fg="cyan"):
         click.secho(json.dumps(message, indent=" " * 4), fg=fg)
 
 
-def setupLogging(level: str = "INFO", env_key: str = "OTRK_LOG_CFG"):
-    """
-    Setup logging
-    """
-
-    logging.getLogger("matplotlib").setLevel(logging.WARNING)
-    plt.style.use("seaborn-pastel")
-
-    level = level.upper()
-
-    value = os.getenv(env_key, None)
-    logstr = []
-    path = None
-    if value is not None:
-        path = value
-    if path is not None and os.path.exists(path):
-        with open(path, "rt") as f:
-            config = json.load(f)
-            config["root"]["level"] = level
-        logging.config.dictConfig(config)
-        logstr.append(f"logging init from provided config: {path}")
-    else:
-        logging.basicConfig(level=level)
-        logstr.append(f"using basicConfig")
-
-    logging.info("\n".join(logstr))
-
-
 class bcolors:
     HEADER = "\033[95m"  # DEBUG
     WARNING = "\033[94m"  # WARNING
