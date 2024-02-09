@@ -1,48 +1,45 @@
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
+  requires     =["setuptools"]
+  build-backend="setuptools.build_meta"
 [project]
-version = "0.0.0"
-name = "object_tracking"
-authors = [{ name = "Neeth Kunnath", email = "neeth.xavier@gmail.com" }]
-description = "Learning based object tracker"
-license = { text = "MIT license" }
-keywords = ["object_tracking"]
-dependencies = ["click", "matplotlib", "opencv-contrib-python", "opencv-python", "numpy"]
-requires-python = ">=3.7"
-dynamic = ["readme"]
-classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Natural Language :: English",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-    ]
-
+  version="0.0.0"
+  name="object_tracking"
+  authors=[{ name="Neeth Kunnath", email="neeth.xavier@gmail.com" }]
+  description="Learning based object tracker"
+  license={ text="MIT license" }
+  keywords=["object_tracking"]
+  dependencies=["click", "matplotlib", "opencv-contrib-python", "opencv-python", "numpy", "seaborn"]
+  requires-python=">=3.10"
+  dynamic=["readme"]
+  classifiers=[
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.10"
+  ]
 [project.optional-dependencies]
-dev = ["black", "build", "tox", "coverage", "Sphinx", "twine", "click", "pytest", "black"]
-test = ["tox", "coverage", "Sphinx", "twine", "click", "pytest", "black"]
-
+  dev =["black", "build", "tox", "coverage", "Sphinx", "twine", "click", "pytest", "black"]
+  test=["tox", "coverage", "Sphinx", "twine", "click", "pytest", "black"]
 [project.scripts]
-object_tracking = "object_tracking.cli:main"
-
+  object_tracking="object_tracking.cli:main"
 [project.urls]
-repository = "https://gitlab.com/draconus21/object_tracking"
-changelog = "https://gitlab.com/draconus21/object_tracking/blob/master/CHANGELOG.md"
-
+  repository="https://gitlab.com/draconus21/object_tracking"
+  changelog ="https://gitlab.com/draconus21/object_tracking/blob/master/CHANGELOG.md"
 [tool.setuptools.dynamic]
-readme = { file = ["README.rst", "CONTRIBUTING.rst", "HISTORY.rst"] }
-
+  readme={ file=["README.rst", "CONTRIBUTING.rst", "HISTORY.rst"] }
+[tool.setuptools.packages.find]
+  include=["object_tracking"]
 [tool.pytest]
-collect_ignore = ["setup.py"]
-
+  collect_ignore=["setup.py"]
+[tool.pytest.ini_options]
+  addopts  ="--capture=sys --basetemp=testdata_tmp --junitxml=testreports/report.xml"
+  testpaths=["benchmark", "."]
 [tool.black]
-line-length = 120
-ignore = "E501"
-extend-exclude = '''
+  line-length=120
+  ignore="E501"
+  extend-exclude='''
 (
   /(
       \.eggs         # exclude a few common directories in the
