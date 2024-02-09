@@ -6,6 +6,9 @@ Object Tracking: A learning based object tracker.
 Setup dev environment for Object Tracking.
 Make sure to run this script in each terminal you want to develop with Object Tracking."
 
+# ------------------------------------------------------------------- #
+#                          TERMINAL COLORS                            #
+# ------------------------------------------------------------------- #
 
 normal=$(tput sgr0)
 bg_normal=$(tput setab sgr0)
@@ -30,10 +33,6 @@ function yellow() {
 function cyan() {
   echo -e ${cyan}$1${normal}
 }
-
-# ------------------------------------------------------------------- #
-#                                 MUNGERS                             #
-# ------------------------------------------------------------------- #
 
 # ------------------------------------------------------------------- #
 #                            HELPER FUNCTIONS                         #
