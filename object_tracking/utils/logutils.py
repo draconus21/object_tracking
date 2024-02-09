@@ -41,22 +41,22 @@ def prettyDumpDict(dictData):
     return json.dumps(makeDictJsonReady(dictData), indent=4, sort_keys=True)
 
 
-def error(message, verboseLvl=3):
+def error(message):
     secho(message, fg="red")
     logging.error(message)
 
 
-def warn(message, verboseLvl=2):
+def warn(message):
     secho(message, fg="yellow")
     logging.warning(message)
 
 
-def info(message, verboseLvl=1):
+def info(message):
     secho(message, fg="cyan")
     logging.info(message)
 
 
-def debug(message, verboseLvl=0):
+def debug(message):
     secho(message, fg=None)
     logging.debug(message)
 
