@@ -99,10 +99,6 @@ make_dir() {
 function setup_env() {
   green "═══ object_tracking env.sh ═══"
 
-  # -o prevent errors from being masked
-  # -u require vars to be declared before referencing them
-  set -uo pipefail
-
   USER_VENV=${1:-""}
   DEFAULT_VENV=".env"
 
@@ -185,9 +181,6 @@ function setup_env() {
   green "\n--- Final Env.Vars ---"
   cyan "(All env. vars. generated from this script related to OTRK)"
   $OTRK_DIR/scripts/log-env-variables.sh
-
-  # To avoid propagating the unbound and pipefail to the current terminal.
-  set +uo pipefail
 
   green "═══ object_tracking env.sh ═══"
 }
