@@ -13,4 +13,15 @@ EXP_DIR = ROOT_DIR / "experiments"
 LOG_DIR = ROOT_DIR / "logs"
 LOG_CFG = ROOT_DIR / "default-logging.json"
 
+from object_tracking.utils.logutils import setupLogging
+
+setupLogging(
+    console_level="INFO",
+    root_level="INFO",
+    log_cfg=LOG_CFG,
+    log_dir=LOG_DIR,
+)
+
+del setupLogging
+del utils
 del Path

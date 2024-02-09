@@ -136,7 +136,8 @@ def setupLogging(
     if logging.getLogger("matplotlib").level < logging.WARNING:
         logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
-    plt.style.use("seaborn-pastel")
+    # does not work
+    # plt.style.use("seaborn")
 
     logstr = []
     try:
