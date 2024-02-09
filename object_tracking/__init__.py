@@ -12,3 +12,5 @@ DATA_DIR = ROOT_DIR / "data"
 EXP_DIR = ROOT_DIR / "experiments"
 LOG_DIR = ROOT_DIR / "logs"
 LOG_CFG = ROOT_DIR / "default-logging.json"
+
+del Path
