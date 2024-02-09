@@ -94,12 +94,7 @@ def set_color_value(levelname, text=None):
     return log_set[levelname]
 
 
-def setupLogging(
-    console_level: str = "INFO",
-    root_level="INFO",
-    log_cfg: str = "",
-    log_dir: str = "",
-):
+def setupLogging(console_level: str = "INFO", root_level="INFO", log_cfg: str = "", log_dir: str = ""):
     """
     Setup logging
     """
