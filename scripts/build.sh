@@ -4,7 +4,7 @@
 #                              ABOUT                                  #
 # ------------------------------------------------------------------- #
 ABOUT_SCRIPT="
-Builds and cleans object_tracking."
+Scripts to setup and clean object_tracking."
 
 # ------------------------------------------------------------------- #
 #                          TERMINAL COLORS                            #
